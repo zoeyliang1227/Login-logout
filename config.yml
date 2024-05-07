@@ -1,4 +1,11 @@
 # Login-logout
-'username': ""
-'password': ""
 'url': ""
+
+'s_username': ""
+'s_password': ""
+
+'f_username': """
+'f_password': ""
+
+'o_username': ""
+'o_password': ""
