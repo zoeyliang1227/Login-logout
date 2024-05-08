@@ -1,6 +1,7 @@
 import yaml
 import time
 import logger
+import signup
 
 from datetime import datetime
 from selenium import webdriver
@@ -22,6 +23,8 @@ def get_driver():
     options.add_argument('--disable-gpu')            # 谷歌文檔說明需要加上這個屬性來規避bug
     options.add_argument('--window-size=1920,1080')  # 設置瀏覽器按鈕（窗口大小）
     options.add_argument('--incognito')               # 啟動無痕
+    options.add_experimental_option('useAutomationExtension', False)
+    options.add_experimental_option("excludeSwitches", ['enable-automation'])
 
     driver = webdriver.Chrome(options=options)
     url = config['url']
@@ -33,39 +36,45 @@ def get_driver():
 
 def main():
     driver = get_driver()
-    login(driver)
+    # login(driver)
+    driver.get('https://app.earnaha.com/profile/account')
+    signup.signup(driver)
 
 def login(driver):
-    #success
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[1]/div[1]/div[2]/div[1]/aside/a'))).click() 
+    
+    #success
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(config['s_username']) 
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(config['s_password']) 
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[2]/button'))).click()  
     
-    time.sleep(1)
+    time.sleep(2)
     check_login(driver)
     driver.get(driver.current_url+'/profile/account')
-    time.sleep(1)
+    time.sleep(2)
     calender(driver)
     signout(driver)
     
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[2]/div'))).click() 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[2]/div'))).click() 
     
-    #fail
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(config['f_username']) 
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(config['f_password']) 
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[2]/button'))).click() 
+    # #fail
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(config['f_username']) 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(config['f_password']) 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[2]/button'))).click() 
     
-    check_login(driver)
+    # check_login(driver)
     
-    #oauth
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/div[3]/form[1]/button/span[2]'))).click() 
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'identifierId'))).send_keys(config['o_username']) 
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="identifierNext"]/div/button/span'))).click()
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'Passwd'))).send_keys(config['o_password'])
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="passwordNext"]/div/button/span'))).click()
+    # #oauth
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/div[3]/form[1]/button/span[2]'))).click() 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'identifierId'))).send_keys(config['o_username']) 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="identifierNext"]/div/button/span'))).click()
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'Passwd'))).send_keys(config['o_password'])
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="passwordNext"]/div/button/span'))).click()
+    
+    # time.sleep(2)
+    # driver.get(driver.current_url+'/profile/account')
+    # signout(driver)
 
-    
 def check_img(driver):
     try:
         if driver.find_element(By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[1]/div[1]/div/div[2]/div/button/div/div/div/div/img'):
@@ -91,12 +100,9 @@ def check_login(driver):
     else:
         dev_logger.info('There is something wrong')
         
-            
-    
-        
 def signout(driver):    
     dev_logger.info('signout')
-    time.sleep(2)
+    time.sleep(3)
     actions = ActionChains(driver)
     ele = driver.find_element(By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[1]/div[2]/div/div[2]')
     cl = driver.find_element(By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div/button')
@@ -104,7 +110,7 @@ def signout(driver):
     
     dev_logger.info('logout')
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[1]/div[2]/div/div/div/div[1]/div[2]/div/div/div/div/button'))).click() 
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[1]/div/div/div/div[2]/div[2]/button'))).click() 
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div/div/div/div/div[2]/div[2]/button'))).click() 
 
 def calender(driver):
     dev_logger.info('calender')
