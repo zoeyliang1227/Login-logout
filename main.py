@@ -3,6 +3,8 @@ import time
 import logger
 import signup
 
+import undetected_chromedriver as uc
+
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -28,7 +30,7 @@ def get_driver():
 
     driver = webdriver.Chrome(options=options)
     url = config['url']
-
+    
     driver.get(url)
     
 
@@ -37,7 +39,7 @@ def get_driver():
 def main():
     driver = get_driver()
     # login(driver)
-    driver.get('https://app.earnaha.com/profile/account')
+    # driver.get('https://app.earnaha.com/profile/account')
     signup.signup(driver)
 
 def login(driver):
@@ -50,7 +52,7 @@ def login(driver):
     
     time.sleep(2)
     check_login(driver)
-    driver.get(driver.current_url+'/profile/account')
+    # driver.get(driver.current_url+'/profile/account')
     time.sleep(2)
     calender(driver)
     signout(driver)

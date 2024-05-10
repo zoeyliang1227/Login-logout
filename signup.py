@@ -1,5 +1,6 @@
 import random
 import time
+import yaml
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -7,6 +8,9 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+
+config = yaml.load(open('earnaha.yml'), Loader=yaml.Loader)
 
 timeout = 10
 email_list = []
@@ -21,63 +25,73 @@ def main():
     print(birthday_random(birthday_list), birthday_list[3])
 
 def signup(driver):
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[1]/div'))).click()
-    driver.execute_script("window.open('');")
-    driver.switch_to.window(driver.window_handles[1]) 
-    driver.get('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ifkv=AaSxoQwVL-19Y5LLIGyWFlWWo30oCHSOmdyrUQgn0tAd-yWZoV_pzFkX5y6kunRmwRbXeSPgcMqYGQ&rip=1&sacu=1&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S1694779515%3A1715072123694556&theme=mn&ddm=0')
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[2]/div'))).click()     #login
+    # # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[1]/div'))).click()       #signup
+    # # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'email'))).send_keys(config['c_username']) 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(config['c_username']) 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(config['c_password']) 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[2]/button'))).click()
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[3]/button'))).click()
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[2]/div/div/div/div/div[5]/div[3]/button'))).click()
     
-    create_google(driver)
+    # driver.execute_script("window.open('');")
+    # driver.switch_to.window(driver.window_handles[1]) 
     
-    driver.switch_to.window(driver.window_handles[0])
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'email'))).send_keys(new_email+'@gmail.com') 
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(pwd_random(password_list))
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[3]/button'))).click() 
+    # get href from gmail
+    driver.get('https://mail.google.com/mail/u/0/#inbox')
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'identifierId'))).send_keys(config['c_username']) 
+    time.sleep(2)
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="identifierNext"]/div/button/span'))).click()
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'Passwd'))).send_keys(config['c_password'])
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="passwordNext"]/div/button/span'))).click()
+    
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id=":1"]/div/div/div[8]'))).click()
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id=":1"]/div/div[2]/div/div[2]/div[2]/div/div[3]/div[1]'))).click()
+    c = WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id=":1"]/div/div[2]/div/div[2]/div[2]/div/div[3]/div[1]'))).find_elements(By.TAG_NAME, 'a')
+    
+    
+    #signup for oauth
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[1]/div'))).click()
+    # driver.execute_script("window.open('');")
+    # driver.switch_to.window(driver.window_handles[1]) 
+    # driver.get('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ifkv=AaSxoQwVL-19Y5LLIGyWFlWWo30oCHSOmdyrUQgn0tAd-yWZoV_pzFkX5y6kunRmwRbXeSPgcMqYGQ&rip=1&sacu=1&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S1694779515%3A1715072123694556&theme=mn&ddm=0')
+    
+    # create_google(driver)
+    
+    # driver.switch_to.window(driver.window_handles[0])
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'email'))).send_keys(new_email+'@gmail.com') 
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(pwd_random(password_list))
+    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[3]/button'))).click() 
     
     driver.get(driver.current_url+'/profile/account')
             
 def create_google(driver):
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/c-wiz/div/div[3]/div/div[2]/div/div/div[1]/div/button/span'))).click()
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/c-wiz/div/div[3]/div/div[2]/div/div/div[2]/div/ul/li[1]/span[3]'))).click()
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'firstName'))).send_keys(email_random(email_list))
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="collectNameNext"]/div/button/span'))).click()
-    time.sleep(10)
     
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'year'))).send_keys(birthday_random(birthday_list))
-    time.sleep(5)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'month'))).send_keys(birthday_list[3])
-    time.sleep(5)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'day'))).send_keys(birthday_list[3])
-    time.sleep(5)
     select = Select(driver.find_element(By.ID, 'gender'))
     select.select_by_index(2)
     
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="birthdaygenderNext"]/div/button/span'))).click()
     email = WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'selectionc2')))
     new_email = email.text
     email.click()
     
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="next"]/div/button/span'))).click()
     
-    time.sleep(10)
     pwd = pwd_random(password_list)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'Passwd'))).send_keys(pwd) 
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'PasswdAgain'))).send_keys(pwd) 
     
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="createpasswordNext"]/div/button/span'))).click()
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/div[1]/div[1]/div[2]/div/div/div[3]/div/div[1]/div[2]/div/div/button/div[3]'))).click()
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="next"]/div/button/span'))).click()
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/c-wiz/div/div[3]/div/div[1]/div/div/button/div[3]'))).click()
-    time.sleep(10)
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="gb"]/div[2]/div[3]/div[1]/div[2]/div/a'))).click()
 
 
@@ -138,4 +152,6 @@ if __name__ == '__main__':
     main()
     
 # V803My6s@gmail.com
-# 8~J72!U~s
+# 8~J72!U~sfor i, te in enumerate(c):
+        if 'https' in te.text:
+            print(i, te.text, te.get_attribute('href'))
