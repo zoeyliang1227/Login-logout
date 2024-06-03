@@ -153,5 +153,3 @@ if __name__ == '__main__':
     
 # V803My6s@gmail.com
 # 8~J72!U~sfor i, te in enumerate(c):
-        if 'https' in te.text:
-            print(i, te.text, te.get_attribute('href'))

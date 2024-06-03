@@ -38,9 +38,8 @@ def get_driver():
 
 def main():
     driver = get_driver()
-    # login(driver)
-    # driver.get('https://app.earnaha.com/profile/account')
-    signup.signup(driver)
+    login(driver)
+    # signup.signup(driver)
 
 def login(driver):
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[1]/div[1]/div[2]/div[1]/aside/a'))).click() 
@@ -52,30 +51,28 @@ def login(driver):
     
     time.sleep(2)
     check_login(driver)
-    # driver.get(driver.current_url+'/profile/account')
     time.sleep(2)
     calender(driver)
     signout(driver)
     
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[2]/div'))).click() 
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/div[2]/div[1]/a[2]/div'))).click() 
     
-    # #fail
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(config['f_username']) 
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(config['f_password']) 
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[2]/button'))).click() 
+    #fail
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'username'))).send_keys(config['f_username']) 
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'password'))).send_keys(config['f_password']) 
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/form/div[2]/button'))).click() 
     
-    # check_login(driver)
+    check_login(driver)
     
-    # #oauth
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/div[3]/form[1]/button/span[2]'))).click() 
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'identifierId'))).send_keys(config['o_username']) 
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="identifierNext"]/div/button/span'))).click()
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'Passwd'))).send_keys(config['o_password'])
-    # WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="passwordNext"]/div/button/span'))).click()
+    #oauth
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/main/section/div/div/div/div[3]/form[1]/button/span[2]'))).click() 
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.ID, 'identifierId'))).send_keys(config['o_username']) 
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="identifierNext"]/div/button/span'))).click()
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, 'Passwd'))).send_keys(config['o_password'])
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="passwordNext"]/div/button/span'))).click()
     
-    # time.sleep(2)
-    # driver.get(driver.current_url+'/profile/account')
-    # signout(driver)
+    time.sleep(2)
+    signout(driver)
 
 def check_img(driver):
     try:
@@ -116,9 +113,13 @@ def signout(driver):
 
 def calender(driver):
     dev_logger.info('calender')
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[2]/div/div/div/div/div[4]/a/div'))).click()
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[2]/div/div/div/div/div[2]/form/div/div[2]/div[1]/div/div[4]/div[1]'))).click()
+    driver.get('https://app.earnaha.com/profile/account')
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div[2]/div/div/div/div/div[4]/a/div'))).click()
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div[2]/div/div/div/div/div[2]/form/div/div[2]/div[1]/div/div[4]/div[1]'))).click()
     cal = WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div/div[2]/div[1]/div'))).find_elements(By.CLASS_NAME, 'css-1rmp3tn')
+    x = WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div/div[1]/button[2]/p')))
+    if str(datetime.now().strftime('%B')) not in x.text:
+        WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div/div[1]/button[3]'))).click()
     a = 0 
     for w, we in enumerate(cal, start=1):
         week = we.find_elements(By.CLASS_NAME, 'css-ltumv2')
@@ -130,9 +131,8 @@ def calender(driver):
                 break
         if a != 0:
             break
-        
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[3]/div/div[3]/button[2]'))).click()
-    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div[2]/div[2]/div[3]/div/button/div'))).click()
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[3]/div/div[3]/button'))).click()
+    WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[2]/div/div/div[2]/div[2]/div[3]/div/button'))).click()
     
 if __name__ == '__main__':
     main()
